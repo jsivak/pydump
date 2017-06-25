@@ -28,7 +28,7 @@ import gzip
 import pickle
 import linecache
 
-import __builtin__
+import builtins as __builtin__
 
 __version__ = "1.1.1"
 
@@ -93,7 +93,7 @@ class FakeCode(object):
         self.co_name = code.co_name
         self.co_argcount = code.co_argcount
         self.co_consts = tuple(
-            FakeCode(c) if hasattr(c, 'co_filename') else c 
+            FakeCode(c) if hasattr(c, 'co_filename') else c
             for c in code.co_consts
         )
         self.co_firstlineno = code.co_firstlineno
@@ -125,7 +125,7 @@ def _remove_builtins(fake_tb):
         frame = traceback.tb_frame
         while frame:
             frame.f_globals = dict(
-                (k,v) for k,v in frame.f_globals.iteritems()
+                (k,v) for k,v in frame.f_globals.items()
                 if k not in dir(__builtin__)
             )
             frame = frame.f_back
@@ -158,7 +158,7 @@ def _get_traceback_files(traceback):
 def _safe_repr(v):
     try:
         return repr(v)
-    except Exception, e:
+    except Exception as e:
         return "repr error: " + str(e)
 
 def _convert_obj(obj):
@@ -174,8 +174,10 @@ def _convert(v):
     from datetime import date, time, datetime, timedelta
 
     BUILTIN = (
-        str, unicode,
-        int, long, float,
+        #str, unicode,
+        str,
+        #int, long, float,
+        int, float,
         date, time, datetime, timedelta,
     )
 
@@ -200,6 +202,6 @@ def _convert(v):
     return _safe_repr(v)
 
 def _cache_files(files):
-    for name, data in files.iteritems():
+    for name, data in files.items():
         lines = [line+'\n' for line in data.splitlines()]
         linecache.cache[name] = (len(data), None, lines, name)
