@@ -23,13 +23,13 @@ if __name__ == '__main__':
     for debugger in options.debuggers:
         try:
             dbg = __import__(debugger)
-        except ImportError, e:
-            print >>sys.stderr, str(e)
+        except ImportError as e:
+            print(str(e))
             continue
         else:
-            print >>sys.stderr, "Starting %s..." % debugger
+            print("Starting %s..." % debugger)
             if debugger == "pudb":
-                pydump.debug_dump(args[0], lambda tb: dbg.post_mortem((None, None, tb)))
+                pydump.debug_dump(args[0], dbg.post_mortem)
             else:
                 pydump.debug_dump(args[0])
             break
